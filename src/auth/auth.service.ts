@@ -3,6 +3,7 @@ import {
   HttpException,
   HttpStatus,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import * as argon2 from 'argon2';
@@ -11,6 +12,7 @@ import { SignInDto, SignUpDto } from './dto/auth.dto';
 import { customAlphabet } from 'nanoid';
 import { JwtService } from '@nestjs/jwt';
 import { UserDto } from 'src/users/dto/user.dto';
+import { MailService } from 'src/mail/mail.service';
 
 const FIVE_MINUTES = 5 * 60 * 1000;
 
@@ -26,6 +28,7 @@ export class AuthService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
+    private mailService: MailService,
   ) {}
 
   async signUp(data: SignUpDto) {
@@ -60,6 +63,12 @@ export class AuthService {
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password: _, ...userWithoutPassword } = newUser;
+
+      await this.mailService.sendSignUpMail({
+        name: data.last_name,
+        email: data.email,
+        token: token,
+      });
 
       return { userWithoutPassword };
     } catch (error) {
@@ -130,5 +139,53 @@ export class AuthService {
       refresh_token: refreshToken,
       user,
     };
+  }
+
+  async resendVerifyToken(email: string) {
+    try {
+      const checkEmail = await this.prismaService.user.findFirst({
+        where: { email },
+      });
+
+      if (!checkEmail) throw new NotFoundException('Email not found');
+
+      if (checkEmail.email_verified)
+        throw new HttpException(
+          'Email already verified',
+          HttpStatus.BAD_REQUEST,
+        );
+
+      const checkVerificationToken =
+        await this.prismaService.verificationToken.findFirst({
+          where: { identifier: email },
+        });
+
+      if (!checkVerificationToken)
+        throw new NotFoundException('Token not found');
+
+      const generateToken = customAlphabet('123456789', 6);
+      const token = generateToken(6);
+
+      const newEmail = await this.prismaService.verificationToken.update({
+        where: { identifier: email },
+        data: {
+          token,
+          expires: new Date(Date.now() + FIVE_MINUTES * 30),
+        },
+      });
+
+      await this.mailService.sendSignUpMail({
+        name: checkEmail.last_name,
+        email: checkEmail.email,
+        token: newEmail.token,
+      });
+
+      return {
+        message: 'Email sent successfully',
+        code: HttpStatus.OK,
+      };
+    } catch (error) {
+      throw new HttpException(error, HttpStatus.BAD_REQUEST);
+    }
   }
 }
