@@ -17,15 +17,16 @@ enum Role {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
+  id             Int            @id @default(autoincrement())
   first_name     String
   last_name      String
-  email          String    @unique
+  email          String         @unique
   email_verified DateTime?
-  role           Role      @default(USER)
+  role           Role           @default(USER)
   password       String
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @updatedAt
+  created_at     DateTime       @default(now())
+  updated_at     DateTime       @updatedAt
+  PasswordReset  PasswordReset?
 }
 
 model VerificationToken {
@@ -34,4 +35,16 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model PasswordReset {
+  id         Int      @id @default(autoincrement())
+  user_id    Int      @unique
+  token      String   @unique
+  expires    DateTime
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@unique([user_id, token])
 }
