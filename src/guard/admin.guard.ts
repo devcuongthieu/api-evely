@@ -10,7 +10,7 @@ import { Request } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private prismaService: PrismaService,
@@ -34,6 +34,8 @@ export class AuthGuard implements CanActivate {
       });
 
       if (!user) throw new NotFoundException();
+
+      if (user?.role !== 'ADMIN') throw new UnauthorizedException();
 
       request['user'] = payload;
     } catch {
