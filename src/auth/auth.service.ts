@@ -66,7 +66,7 @@ export class AuthService {
         const { password, ...userWithoutPassword } = user;
 
         await this.mailService.sendSignUpMail({
-          name: data.last_name,
+          name: data.first_name + ' ' + data.last_name,
           email: data.email,
           token: token,
         });
@@ -235,7 +235,7 @@ export class AuthService {
       });
 
       await this.mailService.sendSignUpMail({
-        name: checkEmail.last_name,
+        name: checkEmail.first_name,
         email: checkEmail.email,
         token: newEmail.token,
       });

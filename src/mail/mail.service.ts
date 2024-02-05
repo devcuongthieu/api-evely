@@ -9,8 +9,8 @@ export class MailService {
   async sendSignUpMail({ name, email, token }: EmailSignUpDto) {
     await this.mailerService.sendMail({
       to: email,
-      subject: 'Chào mừng bạn đến với Eve-ly !',
-      template: './signup.hbs',
+      subject: 'Chào mừng bạn đã đến với Eve-ly!',
+      template: 'confirm-signup.hbs',
       context: {
         name,
         token,
