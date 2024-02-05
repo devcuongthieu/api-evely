@@ -136,11 +136,11 @@ export class AuthService {
         },
       });
 
-      // await this.mailService.sendForgotPasswordMail({
-      //   name: user.last_name,
-      //   email: user.email,
-      //   token: token,
-      // });
+      await this.mailService.sendForgotPasswordMail({
+        name: user.last_name + ' ' + user.first_name,
+        email: user.email,
+        token: token,
+      });
 
       return {
         message: 'Email sent successfully',
@@ -169,6 +169,10 @@ export class AuthService {
           },
         }),
       ]);
+      return {
+        message: 'Reset password successfully',
+        code: HttpStatus.OK,
+      };
     } catch (error) {
       throw new BadRequestException(error);
     }
@@ -318,11 +322,11 @@ export class AuthService {
         },
       });
 
-      // await this.mailService.sendForgotPasswordMail({
-      //   name: user.last_name,
-      //   email: user.email,
-      //   token: token,
-      // });
+      await this.mailService.sendForgotPasswordMail({
+        name: user.last_name + ' ' + user.first_name,
+        email: user.email,
+        token: token,
+      });
 
       return {
         message: 'Email sent successfully',

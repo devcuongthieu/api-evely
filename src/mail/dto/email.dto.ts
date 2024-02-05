@@ -10,3 +10,14 @@ export class EmailSignUpDto {
   @IsString()
   token: string;
 }
+
+export class EmailForgotPasswordDto {
+  @IsEmail()
+  email: string;
+
+  @IsString()
+  name: string;
+
+  @IsString()
+  token: string;
+}
