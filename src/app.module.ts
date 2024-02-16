@@ -10,6 +10,7 @@ import { MailModule } from './mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 import { CinemaModule } from './cinema/cinema.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { ScreenModule } from './screen/screen.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     }),
     CinemaModule,
     CloudinaryModule,
+    ScreenModule,
   ],
   controllers: [AppController],
   providers: [

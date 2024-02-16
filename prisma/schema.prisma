@@ -58,4 +58,16 @@ model Cinema {
   is_active    Boolean  @default(true)
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
+  Screen       Screen[]
+}
+
+model Screen {
+  id          Int      @id @default(autoincrement())
+  cinema_id   Int
+  name        String
+  column_size Int
+  row_size    Int
+  cinema      Cinema   @relation(fields: [cinema_id], references: [id])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
 }
