@@ -8,6 +8,8 @@ import { PrismaService } from './prisma/prisma.service';
 import { APP_PIPE } from '@nestjs/core';
 import { MailModule } from './mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
+import { CinemaModule } from './cinema/cinema.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    CinemaModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [

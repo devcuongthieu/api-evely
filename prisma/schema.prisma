@@ -48,3 +48,14 @@ model PasswordReset {
 
   @@unique([user_id, token])
 }
+
+model Cinema {
+  id           Int      @id @default(autoincrement())
+  name         String
+  phone_number String
+  image        String
+  address      String
+  is_active    Boolean  @default(true)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+}
