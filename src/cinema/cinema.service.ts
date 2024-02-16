@@ -9,6 +9,7 @@ export class CinemaService {
     private prismaService: PrismaService,
     private cloudinaryService: CloudinaryService,
   ) {}
+
   async create(
     { address, name, phone_number }: CreateCinemaDto,
     file: Express.Multer.File,
@@ -19,7 +20,7 @@ export class CinemaService {
         'evely/cinema',
       );
 
-      return this.prismaService.cinema.create({
+      const cinema = await this.prismaService.cinema.create({
         data: {
           address,
           image: url,
@@ -27,6 +28,8 @@ export class CinemaService {
           phone_number,
         },
       });
+
+      return { cinema, message: 'Created successfully' };
     } catch (error) {
       throw error;
     }
@@ -51,7 +54,7 @@ export class CinemaService {
       });
 
       if (!cinema) {
-        throw new NotFoundException('Cinema not found');
+        throw new NotFoundException('Not found');
       }
 
       return cinema;
@@ -73,7 +76,7 @@ export class CinemaService {
       });
 
       if (!checkCinema) {
-        throw new NotFoundException('Cinema not found');
+        throw new NotFoundException('Not found');
       }
 
       if (file) await this.deleteImageCloudinary(checkCinema.image);
@@ -94,7 +97,7 @@ export class CinemaService {
         },
       });
 
-      return cinema;
+      return { cinema, message: 'Updated successfully' };
     } catch (error) {
       throw error;
     }
@@ -109,7 +112,7 @@ export class CinemaService {
       });
 
       if (!cinema) {
-        throw new NotFoundException('Cinema not found');
+        throw new NotFoundException('Not found');
       }
 
       await this.deleteImageCloudinary(cinema.image);
@@ -121,7 +124,7 @@ export class CinemaService {
       });
 
       return {
-        message: 'Delete cinema successfully',
+        message: 'Deleted successfully',
       };
     } catch (error) {
       throw error;
@@ -129,7 +132,7 @@ export class CinemaService {
   }
 
   private deleteImageCloudinary = async (url: string) => {
-    const public_id = `ns-cinema/cinema/${url.split('/').pop().split('.')[0]}`;
+    const public_id = `evely/cinema/${url.split('/').pop().split('.')[0]}`;
 
     await this.cloudinaryService.bulkDelete([public_id]);
   };
