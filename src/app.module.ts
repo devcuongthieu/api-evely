@@ -11,6 +11,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CinemaModule } from './cinema/cinema.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ScreenModule } from './screen/screen.module';
+import { SeatModule } from './seat/seat.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ScreenModule } from './screen/screen.module';
     CinemaModule,
     CloudinaryModule,
     ScreenModule,
+    SeatModule,
   ],
   controllers: [AppController],
   providers: [

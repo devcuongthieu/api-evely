@@ -105,6 +105,12 @@ export class ScreenService {
         throw new NotFoundException('Not found');
       }
 
+      await this.prismaService.screen.delete({
+        where: {
+          id,
+        },
+      });
+
       return {
         message: 'Deleted successfully',
       };

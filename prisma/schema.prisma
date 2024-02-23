@@ -16,6 +16,12 @@ enum Role {
   STAFF
 }
 
+enum SeatType {
+  NORMAL
+  VIP
+  COUPLE
+}
+
 model User {
   id             Int            @id @default(autoincrement())
   first_name     String
@@ -39,9 +45,9 @@ model VerificationToken {
 
 model PasswordReset {
   id         Int      @id @default(autoincrement())
-  user_id    Int      @unique
   token      String   @unique
   expires    DateTime
+  user_id    Int      @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   user       User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
@@ -58,7 +64,20 @@ model Cinema {
   is_active    Boolean  @default(true)
   created_at   DateTime @default(now())
   updated_at   DateTime @updatedAt
-  Screen       Screen[]
+  screens      Screen[]
+}
+
+model Seat {
+  id         Int      @id @default(autoincrement())
+  row        Int
+  column     Int
+  is_active  Boolean  @default(true)
+  name       String
+  seat_type  SeatType
+  screen_id  Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  screen     Screen   @relation(fields: [screen_id], references: [id])
 }
 
 model Screen {
@@ -70,4 +89,5 @@ model Screen {
   cinema      Cinema   @relation(fields: [cinema_id], references: [id])
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
+  seats       Seat[]
 }
